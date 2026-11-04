@@ -28,6 +28,10 @@ tools/import_exam.py            Zet een ExamTopics-PDF om naar een bank
 
 ## Een nieuwe set vragen toevoegen
 
+Uitgebreide handleiding met alle stappen en oplossingen: zie [ADD_CERTIFICATE.md](ADD_CERTIFICATE.md).
+
+Kort samengevat:
+
 1. Zorg dat de PDF met vragen en antwoorden in de ExamTopics-opmaak staat
    (kopjes als "Question #1 Topic 1", opties "A. …", regels "Correct Answer: …").
 2. Draai de importer. Gebruik een nieuwe `--id` voor een ander certificaat:
@@ -72,6 +76,20 @@ Als een nieuwe PDF een andere opmaak heeft dan ExamTopics, moet `parse_text()` i
 ```
 
 ## Publiceren (optioneel)
+
+### Vercel
+
+De app is een statische site zonder build-stap, dus Vercel werkt zonder configuratie:
+
+1. Maak een project aan op vercel.com en koppel de GitHub-repository.
+2. Framework preset: **Other**. Build command: leeg. Output directory: `.` (de hoofdmap).
+3. Deploy. Elke push naar de gekoppelde branch geeft een nieuwe deploy.
+
+Let op: standaard is elke Vercel-deploy bereikbaar voor iedereen met de URL. Zet Deployment Protection
+aan in de projectinstellingen als je de vragen privé wilt houden, en controleer in de Vercel-documentatie
+welke opties je huidige plan biedt.
+
+### GitHub Pages
 
 De app is statisch, dus je kunt de map op elke statische host zetten, bijvoorbeeld GitHub Pages.
 Let op: de vragen komen van ExamTopics. Gebruik de app voor eigen studie, en zet de repository
