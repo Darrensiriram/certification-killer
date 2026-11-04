@@ -439,7 +439,7 @@
     if (q.type === "hotspot" || q.type === "drag_drop" || q.type === "answer_area") {
       wrap.append(el("p", { class: "muted" }, q.type === "drag_drop" ? "Sleep-en-zet-vraag" : "Hotspot-vraag"));
     }
-    wrap.append(el("div", { class: "qtext" }, q.question));
+    wrap.append(formatQuestion(q.question));
     (q.images || []).forEach((src) => wrap.append(el("img", { class: "qimg", src: `bank/${q.__cert}/${src}`, loading: "lazy", alt: "Afbeelding bij de vraag" })));
 
     if (lettersMode) {
@@ -509,6 +509,41 @@
       }
     }
     return wrap;
+  }
+
+  /* Maakt de vraagtekst leesbaar: notities, typeaanduidingen en scenario-"Solution"-regels krijgen een eigen blok. */
+  function formatQuestion(text) {
+    const box = el("div", { class: "qtext" });
+    const NOTE = /^note:/i;
+    const TAG = /^(HOTSPOT|DRAG DROP|Select and Place|Hot Area|Answer Area)\b/i;
+    const SOLUTION = /^solution:/i;
+    let buffer = [];
+    const flush = () => {
+      if (!buffer.length) return;
+      const joined = buffer.join(" ");
+      box.append(el(/\?$/.test(joined) ? "p" : "p", { class: /\?$/.test(joined) ? "qask" : "qpara" }, joined));
+      buffer = [];
+    };
+    for (const raw of text.split("\n")) {
+      const line = raw.trim();
+      if (!line) { flush(); continue; }
+      if (NOTE.test(line)) {
+        flush();
+        box.append(el("div", { class: "qnote" }, line.replace(/^note:\s*/i, "Opmerking: ")));
+      } else if (TAG.test(line)) {
+        flush();
+        box.append(el("div", { class: "qtag" }, line.replace(/\s*-\s*$/, "").replace(/:$/, "")));
+      } else if (SOLUTION.test(line)) {
+        flush();
+        box.append(el("div", { class: "qsolution" }, line.replace(/^solution:\s*/i, "Oplossing: ")));
+      } else {
+        buffer.push(line);
+        // a sentence that ends here starts a new paragraph; a wrapped line continues it
+        if (/[.?:!]$/.test(line)) flush();
+      }
+    }
+    flush();
+    return box;
   }
 
   function renderAnswerPart(q) {
