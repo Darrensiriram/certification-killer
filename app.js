@@ -214,10 +214,10 @@
 
     const footer = el("div", { class: "sticky-bottom" },
       el("div", { class: "row" },
-        el("button", { disabled: s.pos === 0, onclick: () => { s.pos--; practice(s); } }, "← Vorige"),
+        el("button", { disabled: s.pos === 0, onclick: () => { s.pos--; practice(s); window.scrollTo(0, 0); } }, "← Vorige"),
         el("button", { class: "ghost", onclick: () => home() }, "Stoppen"),
         el("button", { class: "primary", disabled: s.pos >= s.ids.length - 1,
-          onclick: () => { s.pos++; practice(s); } }, "Volgende →")));
+          onclick: () => { s.pos++; practice(s); window.scrollTo(0, 0); } }, "Volgende →")));
 
     app.append(el("div", { class: "card" }, header, renderQuestion(q, ans, { mode: "practice" }, () => practice(s))), footer);
   }
@@ -267,7 +267,7 @@
     const grid = el("div", { class: "qnums" }, s.ids.map((id, i) => {
       const a = s.answers[id];
       const cls = [i === s.pos ? "current" : "", a && a.sel.length ? "done" : "", s.marked && s.marked.includes(id) ? "marked" : ""].join(" ");
-      return el("button", { class: cls.trim(), onclick: () => { s.pos = i; examView(s); } }, String(i + 1));
+      return el("button", { class: cls.trim(), onclick: () => { s.pos = i; examView(s); window.scrollTo(0, 0); } }, String(i + 1));
     }));
 
     app.append(
@@ -287,12 +287,12 @@
       el("div", { class: "card" }, grid),
       el("div", { class: "sticky-bottom" },
         el("div", { class: "row" },
-          el("button", { disabled: s.pos === 0, onclick: () => { s.pos--; examView(s); } }, "← Vorige"),
+          el("button", { disabled: s.pos === 0, onclick: () => { s.pos--; examView(s); window.scrollTo(0, 0); } }, "← Vorige"),
           el("button", { class: "danger", onclick: () => {
             if (confirm("Examen inleveren? Niet beantwoorde vragen tellen als fout.")) finishExam(s, false);
           } }, "Inleveren"),
           el("button", { class: "primary", disabled: s.pos >= s.ids.length - 1,
-            onclick: () => { s.pos++; examView(s); } }, "Volgende →"))));
+            onclick: () => { s.pos++; examView(s); window.scrollTo(0, 0); } }, "Volgende →"))));
   }
 
   function clearTimer() {
@@ -525,7 +525,8 @@
       buffer = [];
     };
     for (const raw of text.split("\n")) {
-      const line = raw.trim();
+      // the PDF leaves stray dashes behind ("HOTSPOT -", a lone "-" line before the text)
+      const line = raw.trim().replace(/^-\s*/, "");
       if (!line) { flush(); continue; }
       if (NOTE.test(line)) {
         flush();

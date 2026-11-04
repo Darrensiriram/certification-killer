@@ -50,13 +50,12 @@ body {
   color: var(--text);
 }
 .top {
-  position: sticky; top: 0; z-index: 5;
   display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
 }
 .top h1 { font-size: 18px; margin: 0; }
 .top nav { display: flex; gap: 8px; flex-wrap: wrap; }
-.wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 16px 16px 120px; }
 h2 { font-size: 20px; margin: 4px 0 12px; }
 h3 { font-size: 17px; margin: 12px 0 6px; }
 .card {
@@ -120,13 +119,17 @@ td, th { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line
 .timer { font-variant-numeric: tabular-nums; font-weight: 700; }
 .bigscore { font-size: 40px; font-weight: 700; }
 .sticky-bottom {
-  position: sticky; bottom: 0; background: var(--panel); border-top: 1px solid var(--line);
-  padding: 10px 16px; margin: 16px -16px -16px;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: var(--panel); border-top: 1px solid var(--line);
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
 }
+.sticky-bottom .row { max-width: 760px; margin: 0 auto; flex-wrap: nowrap; }
+.sticky-bottom button { flex: 1; padding: 10px 6px; font-size: 15px; }
+.sticky-bottom button.danger, .sticky-bottom button.ghost { flex: 0.8; }
 .sticky-bottom .row { justify-content: space-between; }
 .hidden { display: none !important; }
 @media (max-width: 480px) {
-  .wrap { padding: 12px; }
+  .wrap { padding: 12px 12px 120px; }
   .top { padding: 10px 12px; }
 }
 .opt:disabled { opacity: 1; cursor: default; color: var(--text); }
